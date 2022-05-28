@@ -62,7 +62,7 @@ const Category = () => {
     >
         {data && data.results.map((item:any)=>{
             return (
-                <GridItem>
+                <GridItem key={item._id}>
             <Cards item={item} />
         </GridItem>
             );
