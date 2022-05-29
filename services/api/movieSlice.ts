@@ -2,11 +2,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface IntialStateType{
-    posts:String[]
+    posts:[]|null,
+    previousState:[]|null
 }
 
-const initialState={
-    posts:[]
+const initialState:IntialStateType={
+    posts:null,
+    previousState:null
 }
 const movieSlice=createSlice({
     name:"movie",
@@ -14,10 +16,17 @@ const movieSlice=createSlice({
     reducers:{
        setPosts:(state:any,action:any)=>
        {
-           state.posts=action.payload.results
-       } 
+           state.posts=action.payload.data.movies
+       },
+       emptyState:(state:any,action:any)=>
+       {
+           const prevState={...state};
+           state.previousState=prevState;
+           state.posts=null;
+       }
+       
     }
 })
 
-export const {setPosts}=movieSlice.actions;
+export const {setPosts,emptyState}=movieSlice.actions;
 export default movieSlice.reducer

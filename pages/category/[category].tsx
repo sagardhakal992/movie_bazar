@@ -3,41 +3,30 @@ import axios from 'axios';
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Cards from '../../components/Common/Cards';
 import { setPosts } from '../../services/api/movieSlice';
-import { useAppDispatch } from '../../services/strores/hooks';
+import { fetchMovies } from '../../services/axios/fetchMovies';
+import { useAppDispatch, useAppSelector } from '../../services/strores/hooks';
 
-const fetchMovies=async(genre:any)=>{
-    try{
-        const options = {
-            method: 'GET',
-            url: 'https://movies-app1.p.rapidapi.com/api/movies?genre=action',
-            headers: {
-              'X-RapidAPI-Host': 'movies-app1.p.rapidapi.com',
-              'X-RapidAPI-Key': '81036bf205msh6d724b7bdaa8bc8p109afcjsn7a14a8e848ee'
-            }
-          };
-        const res=await axios.request(options);
-        const data=await res.data;
-        return data;
-    }
-    catch(err)
-    {
-        throw new Error("something went wrong");
-    }
-}
+
 
 const Category = () => {
     const router=useRouter();
     const category=router.query.category;
     const dispatch=useAppDispatch()
-    const {data,isError,error,isSuccess}=useQuery(`movies/${category}`,()=>fetchMovies(category))
+    const {data,isError,error,isSuccess}=useQuery(`movies/${category}`,()=>fetchMovies("movies"))
+    const movieList=useAppSelector((state)=>state.movies);
     useEffect(()=>{
         if(isSuccess)
         {
-            dispatch(setPosts(data))
+          
+            if(!movieList.posts)
+            {
+              dispatch(setPosts(data))
             toast.success("data fetched success fully");
+            }
         }
         if(error)
         {
@@ -60,14 +49,14 @@ const Category = () => {
       }}
     
     >
-        {data && data.results.map((item:any)=>{
+        {movieList && movieList.posts?.map((item:any,index:number)=>{
             return (
-                <GridItem key={item._id}>
+                <GridItem key={index}>
             <Cards item={item} />
         </GridItem>
             );
         })}
-        {!data && <Center position={"absolute"} top="50%" right={"50%"}   >
+        {!movieList.posts && <Center position={"absolute"} top="50%" right={"50%"}   >
             <Spinner />
             </Center>}
     </Grid>

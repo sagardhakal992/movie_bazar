@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react'
 import {BiSearch} from 'react-icons/bi';
+import { useQuery } from 'react-query';
+import { getGenre } from '../../../../services/axios/fetchMovies';
 import MySelect from '../../Select';
 
 
@@ -38,12 +40,15 @@ const navbarLinks=[
 const AppBar = () => {
     const router=useRouter();
     
+    
   return (
       <Stack w="100%" gap={8}>
     <Flex  w="100%" justify="space-between">
         <Box >
             <InputGroup>
-            <InputLeftElement fontSize={"1.2rem"}  children={<BiSearch style={{height:"50px"}} />} />
+            <InputLeftElement fontSize={"1.2rem"} >
+            <BiSearch style={{height:"50px"}} />
+            </InputLeftElement>
             <Input 
             variant={"flushed"}
             placeholder="Find Whatever You want"
@@ -58,17 +63,15 @@ const AppBar = () => {
         </Flex>
     </Flex>
 
-    <Flex justify={"space-between"} py="4">
+    { <Flex justify={"space-between"} py="4">
         <Box>
             <Text fontSize={"2xl"} fontWeight="700">All Films</Text>
         </Box>
         <Flex gap="20">
             <MySelect />
-            <MySelect />
-            <MySelect />
-            <MySelect />
+            
         </Flex>
-    </Flex>
+    </Flex>}
     </Stack>
   )
 }
